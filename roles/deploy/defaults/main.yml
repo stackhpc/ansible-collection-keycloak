@@ -1,0 +1,129 @@
+---
+#### Docker
+
+# Name of the Keycloak docker container
+keycloak_docker_name: "keycloak"
+
+# Docker image to use 
+keycloak_docker_image: "quay.io/keycloak/keycloak"
+
+# Docker tag to use
+keycloak_docker_tag: "21.1"
+
+#### Keycloak configuration
+# Admin username for Keycloak
+keycloak_admin_username: admin
+
+# Password for the Keycloak admin user
+keycloak_admin_password: "{{ undef('You must set an admin password for Keycloak using keycloak_admin_password') }}"
+
+# Database type (only mariadb tested)
+keycloak_db_type: "mariadb"
+
+# Database username
+keycloak_db_username: "keycloak"
+
+# Database password
+keycloak_db_password: "{{ undef('You must set a database password for keycloak using keycloak_db_password') }}"
+
+# Database name
+keycloak_db_url_database: "keycloak"
+
+# Database host
+keycloak_db_url_host: "{{ undef('You must set a database host for keycloak using keycloak_db_url_host') }}"
+
+# Database port
+keycloak_db_url_port: "3306"
+
+# Interface to bind the Keycloak http server
+keycloak_http_bind_interface: "lo"
+
+# Address to bind the Keycloak http server
+keycloak_http_host: "{{ hostvars[inventory_hostname].ansible_facts[keycloak_http_bind_interface].ipv4.address }}"
+
+# Port to bind the keycloak http server
+keycloak_http_port: "8080"
+
+# Enable Prometheus metrics
+keycloak_metrics_enabled: false
+
+# Expose Keycloak health check endpoints
+keycloak_health_enabled: false
+
+#### Keycloak JGroups cache configuration
+# JGroups cache discovery protocol (only JDBC_PING tested)
+keycloak_jgroups_discovery_protocol: "JDBC_PING"
+
+# JGroups cache JDBC driver name (only org.mariadb.jdbc.Driver tested)
+keycloak_jdbc_driver_name: "org.mariadb.jdbc.Driver"
+
+# JGroups cache initialise SQL statement
+keycloak_jdbc_initialise_sql: >-
+  CREATE TABLE IF NOT EXISTS JGROUPSPING 
+    (own_addr varchar(200) NOT NULL, 
+    cluster_name varchar(200) NOT NULL, 
+    ping_data VARBINARY(255), 
+    constraint PK_JGROUPSPING 
+    PRIMARY KEY (own_addr, cluster_name));
+
+# JGroups discovery bind interface (should be an internal network)
+keycloak_jgroups_discovery_bind_interface: "lo"
+
+# JGroups discovery bind address (derived from keycloak_jgroups_discovery_bind_interface)
+keycloak_jgroups_discovery_bind_addr: "{{ hostvars[inventory_hostname].ansible_facts[keycloak_jgroups_discovery_bind_interface].ipv4.address }}"
+
+# JGroups discovery bind port
+keycloak_jgroups_discovery_bind_port: 7800
+
+# JGroups failure-detection port
+keycloak_jgroups_fd_port: 57800
+
+# JGroups failure-detection port-offset (derived from keycloak_jgroups_fd_port and keycloak_jgroups_discovery_bind_port)
+keycloak_jgroups_fd_port_offset: "{{ keycloak_jgroups_fd_port - keycloak_jgroups_discovery_bind_port }}"
+
+# JGroups Java args
+keycloak_jgroups_java_args: >-
+    -Djgroups.bind.port={{ keycloak_jgroups_discovery_bind_port }}
+    -Djgroups.fd.port-offset={{ keycloak_jgroups_fd_port_offset }}
+    -Djgroups.bind_addr=match-address:{{ keycloak_jgroups_discovery_bind_addr }}
+
+#### Keycloak container command
+# Keycloak server command
+keycloak_server_command: "start"
+
+# Keycloak proxy type
+keycloak_proxy_type: ""
+
+# Extra args to pass to the Keycloak server command
+keycloak_server_command_args_extra: ""
+
+# Final Keycloak Docker command
+keycloak_docker_command: >-
+  {{- "{} {} {} {}".format(
+      keycloak_server_command,
+      ( ' --proxy=' ~ keycloak_proxy_type if (keycloak_proxy_type | length > 0 )),
+      keycloak_jgroups_java_args,
+      keycloak_server_command_args_extra
+      )
+  -}}
+
+#### Cache configuration files
+# Host configuration directory
+keycloak_host_config_dir: /etc/keycloak
+
+# Cache configuration filename
+keycloak_cache_config_file: cache-ispn-config.xml
+
+# Cache configuration template file
+keycloak_cache_config_file_template: cache-ispn-jdbc-ping.xml.j2
+
+#### Docker volumes
+# Ensure the cache config file is mounted
+_keycloak_volumes_default:
+ - "{{ keycloak_host_config_dir }}/{{ keycloak_cache_config_file }}:/opt/keycloak/conf/{{ keycloak_cache_config_file }}"
+
+# Allow a list of extra volumes to be specified
+keycloak_volumes_extra: []
+
+_keycloak_volumes: "{{ _keycloak_volumes_default + keycloak_volumes_extra }}"
+

@@ -1,0 +1,14 @@
+namespace: "stackhpc"
+name: "keycloak"
+version: "0.0.1"
+readme: "README.md"
+authors:
+  - "Matt Anson"
+dependencies:
+  "community.docker": "*"
+license:
+  - "Apache-2.0"
+tags:
+  - keycloak
+repository: "https://github.com/stackhpc/ansible-collection-keycloak"
+
