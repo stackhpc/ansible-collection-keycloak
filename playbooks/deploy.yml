@@ -1,0 +1,5 @@
+---
+- name: Run Keycloak deploy role
+  hosts: keycloak
+  roles:
+    - role: stackhpc.keycloak.deploy
