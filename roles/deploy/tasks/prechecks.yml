@@ -1,0 +1,10 @@
+---
+
+- name: Fail if database admin credentials are not provided when ensuring Keycloak database
+  fail:
+    msg: >-
+      Set keycloak_db_login_username and keycloak_db_login_password when
+      keycloak_db_ensure_database is true 
+  when:
+    - keycloak_db_ensure_database
+    - keycloak_db_login_username is not defined or keycloak_db_login_password is not defined

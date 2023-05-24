@@ -6,6 +6,7 @@ authors:
   - "Matt Anson"
 dependencies:
   "community.docker": "*"
+  "community.mysql": "*"
 license:
   - "Apache-2.0"
 tags:
