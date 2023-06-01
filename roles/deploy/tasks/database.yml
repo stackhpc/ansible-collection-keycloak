@@ -1,0 +1,19 @@
+---
+- name: Ensure Keycloak database exists
+  community.mysql.mysql_db:
+    name: "{{ keycloak_db_url_database }}"
+    login_user: "{{ keycloak_db_login_username }}"
+    login_password: "{{ keycloak_db_login_password }}"
+    login_host: "{{ keycloak_db_url_host }}"
+    login_port: "{{ keycloak_db_url_port }}"
+
+- name: Ensure Keycloak database user exists
+  community.mysql.mysql_user:
+    name: "{{ keycloak_db_username }}"
+    password: "{{ keycloak_db_password }}"
+    priv: "{{ keycloak_db_mariadb_user_priv }}"
+    host: "{{ keycloak_db_mariadb_user_host }}"
+    login_user: "{{ keycloak_db_login_username }}"
+    login_password: "{{ keycloak_db_login_password }}"
+    login_host: "{{ keycloak_db_url_host }}"
+    login_port: "{{ keycloak_db_url_port }}"

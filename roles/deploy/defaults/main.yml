@@ -10,12 +10,17 @@ keycloak_docker_image: "quay.io/keycloak/keycloak"
 # Docker tag to use
 keycloak_docker_tag: "21.1"
 
-#### Keycloak configuration
-# Admin username for Keycloak
-keycloak_admin_username: admin
+#### Keycloak database
+# Ensure that a Keycloak database and user are configured
+keycloak_db_ensure_database: true
 
-# Password for the Keycloak admin user
-keycloak_admin_password: "{{ undef('You must set an admin password for Keycloak using keycloak_admin_password') }}"
+# When ensuring Keycloak user, set the following privileges string
+# (https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html#parameter-priv)
+keycloak_db_mariadb_user_priv: "{{ keycloak_db_url_database }}.*:ALL"
+
+# When ensuring Keycloak user, set the following 'host' part of the username
+# Default is all hosts
+keycloak_db_mariadb_user_host: "%"
 
 # Database type (only mariadb tested)
 keycloak_db_type: "mariadb"
@@ -34,6 +39,13 @@ keycloak_db_url_host: "{{ undef('You must set a database host for keycloak using
 
 # Database port
 keycloak_db_url_port: "3306"
+
+#### Keycloak configuration
+# Admin username for Keycloak
+keycloak_admin_username: admin
+
+# Password for the Keycloak admin user
+keycloak_admin_password: "{{ undef('You must set an admin password for Keycloak using keycloak_admin_password') }}"
 
 # Interface to bind the Keycloak http server
 keycloak_http_bind_interface: "lo"

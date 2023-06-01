@@ -1,5 +1,13 @@
 ---
+- name: Run prechecks
+  include_tasks: prechecks.yml
 
+- name: Ensure Keycloak database and Keycloak database user
+  include_tasks: database.yml
+  when: 
+   - keycloak_db_ensure_database
+   - inventory_hostname == play_hosts[0]
+    
 - name: Ensure Keycloak host config directory
   file:
     state: directory
