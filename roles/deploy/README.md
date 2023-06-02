@@ -81,6 +81,11 @@ Example playbook (used with OpenStack Kayobe)
 ---
 - name: Run Keycloak Install role
   hosts: controllers
+  vars:
+    keycloak:
+      keycloak_admin_username: keycloak_admin
+      keycloak_admin_password: keycloak_password
+      keycloak_database_password: keycloak_database_password
   tasks:
     - name: Set a fact about the virtualenv on the remote system
       set_fact:
@@ -100,11 +105,11 @@ Example playbook (used with OpenStack Kayobe)
     - import_role: 
         name: stackhpc.keycloak.deploy
       vars:
-        keycloak_admin_username: "{{ keycloak_admin_username }}"
-        keycloak_admin_password: "{{ keycloak_admin_password }}"
+        keycloak_admin_username: "{{ keycloak.keycloak_admin_username }}"
+        keycloak_admin_password: "{{ keycloak.keycloak_admin_password }}"
         keycloak_db_url_host: "{{ database_address | put_address_in_context('url') }}"
         keycloak_db_url_database: keycloak
-        keycloak_db_password: "{{ keycloak_database_password }}"
+        keycloak_db_password: "{{ keycloak.keycloak_database_password }}"
         keycloak_db_login_user: root
         keycloak_db_login_password: "{{ database_password }}" 
         keycloak_db_user: keycloak
