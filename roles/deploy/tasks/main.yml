@@ -23,7 +23,7 @@
     owner: root
     mode: 0644
   become: true
-  notify: Restart keycloak container
+  register: cache_ispn_configuration_file
 
 - name: Ensure keycloak container is running
   docker_container:
@@ -35,29 +35,7 @@
     comparisons:
       '*': strict
     restart_policy: "always"
-    env:
-      KEYCLOAK_ADMIN: "{{ keycloak_admin_username }}"
-      KEYCLOAK_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
-      KC_LOG_LEVEL: "{{ keycloak_log_level | default(omit) }}"
-      KC_DB: "{{ keycloak_db_type }}"
-      KC_DB_USERNAME: "{{ keycloak_db_username }}"
-      KC_DB_PASSWORD: "{{ keycloak_db_password }}"
-      KC_DB_URL_HOST: "{{ keycloak_db_url_host }}"
-      KC_DB_URL_PORT: "{{ keycloak_db_url_port | string }}"
-      KC_DB_URL_DATABASE: "{{ keycloak_db_url_database }}"
-      KC_HOSTNAME_URL: "{{ keycloak_hostname_url | default(omit) }}"
-      KC_HTTP_HOST: "{{ keycloak_http_host | default(omit) }}"
-      KC_HTTP_PORT: "{{ keycloak_http_port | default(omit) }}"
-      KC_HOSTNAME_STRICT: "{{ keycloak_hostname_strict | default(omit) }}"
-      KC_HOSTNAME_PATH: "{{ keycloak_hostname_path | default(omit) }}"
-      KC_HTTP_RELATIVE_PATH: "{{ keycloak_http_relative_path | default(omit) }}"
-      KC_METRICS_ENABLED: "{{ keycloak_metrics_enabled | default('false') | string }}"
-      KC_HEALTH_ENABLED: "{{ keycloak_health_enabled | default('false') | string }}"
-      KC_CACHE_CONFIG_FILE: "{{ keycloak_cache_config_file }}"
-      KC_JDBC_DRIVER_NAME: "{{ keycloak_jdbc_driver_name }}"
-      KC_JDBC_DRIVER_INITIALISE_SQL: "{{ keycloak_jdbc_initialise_sql }}"
-      JGROUPS_DISCOVERY_PROTOCOL: "{{ keycloak_jgroups_discovery_protocol }}"
-      JGROUPS_DISCOVERY_BIND_ADDR: "{{ keycloak_jgroups_discovery_bind_addr }}"
-      JGROUPS_DISCOVERY_BIND_PORT: "{{ keycloak_jgroups_discovery_bind_port | string }}"
+    restart: "{{ cache_ispn_configuration_file is changed }}"
+    env: "{{ _keycloak_env_vars }}"
     command: "{{ keycloak_docker_command }}"
   become: true
