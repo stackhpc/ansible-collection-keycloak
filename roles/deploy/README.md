@@ -29,6 +29,7 @@ These configuration options broadly follow those documented by the [Keycloak pro
 * **keycloak_db_username:** Database username (default: `"keycloak"`)
 * **keycloak_db_url_database:** Database name (default: `"keycloak"`)
 * **keycloak_db_url_port:** Database port (default: `3306`)
+* **keycloak_transaction_xa_enabled:** Enable XA transaction support (default: `false`)
 * **keycloak_http_bind_interface:** Interface to bind the Keycloak http server (default: `"lo"`)
 * **keycloak_http_port:** Port to bind the keycloak http server (default: `"8080"`)
 * **keycloak_metrics_enabled:** Enable Prometheus metrics (default: `false`)

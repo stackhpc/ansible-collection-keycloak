@@ -62,6 +62,10 @@ keycloak_metrics_enabled: false
 # Expose Keycloak health check endpoints
 keycloak_health_enabled: false
 
+# Enable XA transactions (https://www.keycloak.org/server/db). 
+# XA transactions not supported by mariadb/galera in Kolla Ansible, so disable by default
+keycloak_transaction_xa_enabled: false
+
 #### Keycloak JGroups cache configuration
 # JGroups cache discovery protocol (only JDBC_PING tested)
 keycloak_jgroups_discovery_protocol: "JDBC_PING"
@@ -161,6 +165,7 @@ keycloak_env_vars_default:
   KC_CACHE_CONFIG_FILE: "{{ keycloak_cache_config_file }}"
   KC_JDBC_DRIVER_NAME: "{{ keycloak_jdbc_driver_name }}"
   KC_JDBC_DRIVER_INITIALISE_SQL: "{{ keycloak_jdbc_initialise_sql }}"
+  KC_TRANSACTION_XA_ENABLED: "{{ keycloak_transaction_xa_enabled | string }}"
   JGROUPS_DISCOVERY_PROTOCOL: "{{ keycloak_jgroups_discovery_protocol }}"
   JGROUPS_DISCOVERY_BIND_ADDR: "{{ keycloak_jgroups_discovery_bind_addr }}"
   JGROUPS_DISCOVERY_BIND_PORT: "{{ keycloak_jgroups_discovery_bind_port | string }}"
