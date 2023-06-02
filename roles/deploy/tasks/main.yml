@@ -23,7 +23,7 @@
     owner: root
     mode: 0644
   become: true
-  notify: Restart keycloak container
+  register: cache_ispn_configuration_file
 
 - name: Ensure keycloak container is running
   docker_container:
@@ -35,6 +35,7 @@
     comparisons:
       '*': strict
     restart_policy: "always"
+    restart: "{{ cache_ispn_configuration_file is changed }}"
     env: "{{ _keycloak_env_vars }}"
     command: "{{ keycloak_docker_command }}"
   become: true
