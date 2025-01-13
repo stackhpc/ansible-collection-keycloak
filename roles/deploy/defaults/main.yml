@@ -117,7 +117,7 @@ keycloak_server_command_args_extra: ""
 keycloak_docker_command: >-
   {{- "{} {} {} {}".format(
       keycloak_server_command,
-      ( ' --proxy=' ~ keycloak_proxy_type if (keycloak_proxy_type | length > 0 )),
+      ( ' --proxy-headers=' ~ keycloak_proxy_type if (keycloak_proxy_type | length > 0 )),
       keycloak_jgroups_java_args,
       keycloak_server_command_args_extra
       )
